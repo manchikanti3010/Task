@@ -5,19 +5,33 @@ import re
 import json
 from datetime import datetime
 from dotenv import load_dotenv
+import streamlit as st
 
-# Load Google API key
+# Load Google API key from multiple sources
 load_dotenv()
-google_api_key = os.getenv("GOOGLE_API_KEY")
+
+# Try to get API key from Streamlit secrets first (for deployment)
+try:
+    google_api_key = st.secrets.get("GOOGLE_API_KEY", None)
+except:
+    google_api_key = None
+
+# Fall back to environment variable if not in secrets
+if not google_api_key:
+    google_api_key = os.getenv("GOOGLE_API_KEY")
 
 # Configure Gemini API with error handling
 try:
-    genai.configure(api_key=google_api_key)
-    # Initialize Gemini model
-    model = genai.GenerativeModel('gemini-1.5-flash')
-    # Test the connection
-    test_response = model.generate_content("Hello")
-    API_AVAILABLE = True
+    if google_api_key:
+        genai.configure(api_key=google_api_key)
+        # Initialize Gemini model
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Test the connection
+        test_response = model.generate_content("Hello")
+        API_AVAILABLE = True
+    else:
+        API_AVAILABLE = False
+        model = None
 except Exception as e:
     print(f"Warning: Gemini API not available: {e}")
     API_AVAILABLE = False
@@ -40,7 +54,7 @@ def process_document(uploaded_file):
 def generate_summary(text, max_words=150):
     """Summarize the document using Gemini"""
     if not API_AVAILABLE:
-        return "API not available. Please check your Google API key."
+        return "API not available. Please check your Google API key configuration in Streamlit Cloud secrets."
     
     try:
         text = re.sub(r"\s+", " ", text).strip()
@@ -66,7 +80,7 @@ def generate_summary(text, max_words=150):
 def answer_question(text, question):
     """Use Gemini to answer a question or evaluate an answer"""
     if not API_AVAILABLE:
-        return "API not available. Please check your Google API key."
+        return "API not available. Please check your Google API key configuration in Streamlit Cloud secrets."
     
     try:
         context = re.sub(r"\s+", " ", text).strip()
@@ -143,7 +157,7 @@ def generate_questions(text, num_questions=3):
 def extract_key_points(text):
     """Extract key points and insights from the document"""
     if not API_AVAILABLE:
-        return ["API not available"]
+        return ["API not available. Please check your Google API key configuration in Streamlit Cloud secrets."]
     
     try:
         context = re.sub(r"\s+", " ", text).strip()
@@ -162,7 +176,7 @@ def extract_key_points(text):
 def generate_insights(text):
     """Generate insights and analysis from the document"""
     if not API_AVAILABLE:
-        return "API not available"
+        return "API not available. Please check your Google API key configuration in Streamlit Cloud secrets."
     
     try:
         context = re.sub(r"\s+", " ", text).strip()
