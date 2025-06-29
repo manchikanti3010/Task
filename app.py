@@ -16,39 +16,9 @@ load_dotenv()
 # Page configuration
 st.set_page_config(
     page_title="AI Research Assistant Pro",
-    page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-# Custom CSS for professional styling
-st.markdown("""
-<style>
-    .main-header {
-        font-size: 3rem;
-        font-weight: bold;
-        color: #1f77b4;
-        text-align: center;
-        margin-bottom: 2rem;
-    }
-    .metric-card {
-        background-color: #f0f2f6;
-        padding: 1rem;
-        border-radius: 0.5rem;
-        border-left: 4px solid #1f77b4;
-    }
-    .feature-box {
-        background-color: #ffffff;
-        padding: 1.5rem;
-        border-radius: 0.5rem;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin: 1rem 0;
-    }
-    .sidebar .sidebar-content {
-        background-color: #f8f9fa;
-    }
-</style>
-""", unsafe_allow_html=True)
 
 def initialize_session_state():
     """Initialize session state variables"""
@@ -78,7 +48,7 @@ def initialize_session_state():
 
 def sidebar_analytics():
     """Display analytics in sidebar"""
-    st.sidebar.markdown("## 📊 Analytics")
+    st.sidebar.markdown("## Analytics")
     
     # Load analytics from file
     analytics = load_session_data("analytics.json")
@@ -96,7 +66,7 @@ def sidebar_analytics():
 
 def export_data():
     """Export session data"""
-    st.sidebar.markdown("## 📤 Export")
+    st.sidebar.markdown("## Export")
     
     if st.sidebar.button("Export Session Data"):
         export_data = {
@@ -164,32 +134,32 @@ def main():
     initialize_session_state()
     
     # Header
-    st.markdown('<h1 class="main-header">🧠 AI Research Assistant Pro</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header"> AI Research Assistant Pro</h1>', unsafe_allow_html=True)
     
     # Sidebar
     with st.sidebar:
-        st.markdown("## 🎯 Features")
+        st.markdown("##  Features")
         feature_mode = st.selectbox(
             "Choose Analysis Mode:",
-            ["📄 Document Analysis", "💬 Interactive Q&A", "🎯 Challenge Mode", "📊 Analytics Dashboard"]
+            ["Document Analysis", "Interactive Q&A", "Challenge Mode", "Analytics Dashboard"]
         )
         
         sidebar_analytics()
         export_data()
     
     # Main content area
-    if feature_mode == "📄 Document Analysis":
+    if feature_mode == "Document Analysis":
         document_analysis_page()
-    elif feature_mode == "💬 Interactive Q&A":
+    elif feature_mode == "Interactive Q&A":
         interactive_qa_page()
-    elif feature_mode == "🎯 Challenge Mode":
+    elif feature_mode == "Challenge Mode":
         challenge_mode_page()
-    elif feature_mode == "📊 Analytics Dashboard":
+    elif feature_mode == "Analytics Dashboard":
         analytics_dashboard_page()
 
 def document_analysis_page():
     """Document analysis page"""
-    st.markdown("## 📄 Document Analysis")
+    st.markdown("## Document Analysis")
     
     uploaded_file = st.file_uploader(
         "Upload a PDF or TXT document",
@@ -214,7 +184,7 @@ def document_analysis_page():
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("### 📝 Summary")
+            st.markdown("### Summary")
             if st.button("Generate Summary"):
                 with st.spinner("Generating summary..."):
                     summary = generate_summary(doc_text)
@@ -236,7 +206,7 @@ def document_analysis_page():
                     st.markdown(f"• {point}")
         
         # Insights section
-        st.markdown("### 💡 AI Insights")
+        st.markdown("### AI Insights")
         if st.button("Generate Insights"):
             with st.spinner("Generating insights..."):
                 insights = generate_insights(doc_text)
@@ -247,7 +217,7 @@ def document_analysis_page():
 
 def interactive_qa_page():
     """Interactive Q&A page"""
-    st.markdown("## 💬 Interactive Q&A")
+    st.markdown("## Interactive Q&A")
     
     if not st.session_state.doc_text:
         st.warning("Please upload a document first in the Document Analysis section.")
@@ -280,7 +250,7 @@ def interactive_qa_page():
     
     # Session history
     if st.session_state.session_history:
-        st.markdown("### 📚 Session History")
+        st.markdown("###  Session History")
         for i, entry in enumerate(reversed(st.session_state.session_history[-5:])):  # Show last 5
             with st.expander(f"Q: {entry['question'][:50]}..."):
                 st.write(f"**Question:** {entry['question']}")
@@ -289,7 +259,7 @@ def interactive_qa_page():
 
 def challenge_mode_page():
     """Challenge mode page"""
-    st.markdown("## 🎯 Challenge Mode")
+    st.markdown("##  Challenge Mode")
     
     if not st.session_state.doc_text:
         st.warning("Please upload a document first in the Document Analysis section.")
@@ -337,7 +307,7 @@ def challenge_mode_page():
 
 def analytics_dashboard_page():
     """Analytics dashboard page"""
-    st.markdown("## 📊 Analytics Dashboard")
+    st.markdown("## Analytics Dashboard")
     
     # Load analytics
     analytics = load_session_data("analytics.json")

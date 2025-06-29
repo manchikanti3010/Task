@@ -12,7 +12,6 @@ GEMINI_MODEL = "gemini-1.5-flash"
 
 # Application Settings
 APP_TITLE = "AI Research Assistant Pro"
-APP_ICON = "🧠"
 PAGE_LAYOUT = "wide"
 
 # Document Processing
